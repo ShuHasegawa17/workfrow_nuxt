@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-card class="mt-5 mx-auto" width="400px">
+    <v-card class="mt-10 mx-auto" width="400px">
       <v-card-title>
         <h1 class="display-1">{{ title }}</h1>
       </v-card-title>
@@ -10,7 +10,7 @@
             label="ユーザ名"
             prepend-icon="mdi-account-circle"
             v-model="name"
-            :rules="rules.name"
+            :rules="[rules.name[0], rules.name[1]]"
             required
           />
           <v-text-field
@@ -20,7 +20,8 @@
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             v-model="password"
             @click:append="showPassword = !showPassword"
-            :rules="rules.name"
+            :rules="rules.password"
+            maxlength="20"
             required
           />
           <v-card-actions>
@@ -63,6 +64,7 @@ export default Vue.extend({
         name: [
           (val: string) =>
             (val || '').length > 0 || 'ユーザ名を入力してください',
+          (val: string) => (val || '').length <= 20 || '20字以内です',
         ],
         password: [
           (val: string) =>

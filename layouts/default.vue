@@ -5,33 +5,37 @@
       <v-toolbar-title>Title</v-toolbar-title>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" absolute temporary>
-      <v-list nav dense>
-        <v-list-item-group
-          v-model="group"
-          active-class="deep-purple--text text--accent-4"
+    <v-navigation-drawer
+      v-model="drawer"
+      absolute
+      temporary
+      color="deep-purple"
+      dark
+      app
+    >
+      <v-list>
+        <v-list-item
+          v-for="(item, i) in menus"
+          :key="i"
+          @click="transition(item.title, item.to)"
         >
-          <v-list-item
-            v-for="(item, i) in menus"
-            :key="i"
-            @click="transition(item.title, item.to)"
-          >
-            <v-list-item-action>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title" />
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
+          <v-list-item-action>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title v-text="item.title" />
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-main>
-      <v-container>
+      <v-container fluid>
         <Nuxt />
       </v-container>
     </v-main>
-    <Fotter />
+    <v-footer color="deep-purple" dark app>
+      <span>&copy; {{ footerString }}</span>
+    </v-footer>
   </v-app>
 </template>
 <script lang="ts">
@@ -45,7 +49,8 @@ interface Menu {
 }
 interface Data {
   drawer: boolean
-  group: number
+  author: string
+  year: number
   menus: Array<Menu>
 }
 export default Vue.extend({
@@ -56,18 +61,24 @@ export default Vue.extend({
   data(): Data {
     return {
       drawer: false,
-      group: 1,
+      author: 'shu hasegawa',
+      year: new Date().getFullYear(),
       menus: [
         { title: 'ユーザ設定', to: '/user', icon: 'mdi-user' },
         { title: 'ログアウト', to: '/', icon: '' },
+        { title: 'テスト', to: '/inspire', icon: '' },
       ],
     }
   },
+  computed: {
+    footerString(): string {
+      return `${this.year} ${this.author}`
+    },
+  },
   methods: {
     transition(title: string, to: string) {
-      console.log(title)
       if (title === 'ログアウト') {
-        this.$store.commit('login/setLogin', false)
+        this.$store.dispatch('login/logout')
       }
       this.$router.push(to)
     },

@@ -13,6 +13,5 @@ export default Vue.extend({
   components: {
     Fotter,
   },
-  middleware: 'auth',
 })
 </script>

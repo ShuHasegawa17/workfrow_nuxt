@@ -100,6 +100,7 @@ export default Vue.extend({
       console.log(this.isLoading)
     },
   },
+  /** 
   async asyncData({ query, $axios }: Context): Promise<AsyncData> {
     console.log(`queryは?${query.page}`)
     const data = await $axios.$get(`https://zipcloud.ibsnet.co.jp/api/search`, {
@@ -110,9 +111,6 @@ export default Vue.extend({
     console.log(data)
     return { zipAddress: data.results[0] }
   },
+  */
 })
-//以降消す
-type IsString<T> = T extends string ? true : false
-type X = IsString<'test'>
-type y = IsString<10>
 </script>
