@@ -1,6 +1,6 @@
 import { Context } from '@nuxt/types'
 export default function ({ redirect, store }: Context) {
-  if (!store.state.islogin) {
+  if (!store.state.login.islogin) {
     return redirect('/')
   }
 }
