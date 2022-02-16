@@ -7,11 +7,6 @@ v-text-field
     <v-text-field v-model="zipAddress.address2" label="住所2"></v-text-field>
     <v-text-field v-model="zipAddress.address3" label="住所3"></v-text-field>
     <p>{{ zipCode }}</p>
-    <div v-if="isLoading">
-      <v-progress-circular :size="40" indeterminate color="primary"
-        >loading...</v-progress-circular
-      >
-    </div>
   </section>
 </template>
 
@@ -30,8 +25,6 @@ interface Data {
   title: string
   zipCode: string
   zipAddress: Partial<Address>
-  debouncedClick: Function
-  isLoading: boolean
   rules: {
     zipCode: Array<Function>
     requires: Array<Function>
@@ -44,16 +37,11 @@ export default Vue.extend({
     AppArticle,
     ZipInput,
   },
-  created() {
-    this.debouncedClick = debounce(this.click, 1000)
-  },
   data(): Data {
     return {
       title: `ユーザ設定`,
       zipCode: '',
       zipAddress: {},
-      debouncedClick: () => {},
-      isLoading: false,
       rules: {
         zipCode: [
           (val: string) =>
@@ -67,24 +55,16 @@ export default Vue.extend({
   computed: {
     subtitle(): string {
       return `${this.title} 登録`
-      this.rules.zipCode.map((e) => e)
     },
   },
   methods: {
     click() {
       this.getAddress()
     },
-    debouncedClickWrap() {
-      this.isLoading = true
-      console.log(this.isLoading)
-      this.debouncedClick()
-    },
     async getAddress() {
       console.log(this.zipCode)
       const address = await getAddress(this.zipCode)
       address ? (this.zipAddress = address) : ''
-      this.isLoading = false
-      console.log(this.isLoading)
     },
 
     setData(address: Partial<Address>) {

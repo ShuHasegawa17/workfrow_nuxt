@@ -32,6 +32,11 @@
       <v-container>
         <Nuxt />
       </v-container>
+      <v-overlay :value="this.$store.getters['load/loading']">
+        <v-progress-circular :size="40" indeterminate color="primary">
+          loading...
+        </v-progress-circular></v-overlay
+      >
     </v-main>
     <v-footer color="deep-purple" dark app>
       <span>&copy; {{ footerString }}</span>
