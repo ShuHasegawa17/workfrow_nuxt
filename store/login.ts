@@ -1,36 +1,27 @@
-interface State {
-  islogin: boolean
-}
+import { Getters, Mutations, Actions } from './types/types'
+import { State, IGetters, IMutations, IActions } from './types/loginType'
 
-type Getters<S> = {
-  [k: string]: (state: S) => unknown
-}
-
-// dataと同じ感じ
 export const state = (): State => ({
-  islogin: false,
+  isLogin: false,
 })
 
-//セッター
-export const mutations = {
-  setLogin(state: State, islogin: boolean) {
-    state.islogin = islogin
+export const getters: Getters<State, IGetters> = {
+  login(state) {
+    return state.isLogin
   },
 }
 
-// ゲッター
-export const getters: Getters<State> = {
-  getLogin(state) {
-    return state.islogin
+export const mutations: Mutations<State, IMutations> = {
+  setLogin(state, payload) {
+    state.isLogin = payload
   },
 }
 
-//メソッド
-export const actions = {
-  async login({ commit }: any) {
-    const islogin = await commit('setLogin', true)
+export const actions: Actions<State, IActions, IGetters, IMutations> = {
+  login(ctx) {
+    ctx.commit('setLogin', true)
   },
-  logout({ commit }: any) {
-    commit('setLogin', false)
+  logout(ctx) {
+    ctx.commit('setLogin', false)
   },
 }

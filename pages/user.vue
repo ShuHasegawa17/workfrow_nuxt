@@ -1,19 +1,16 @@
+v-text-field
 <template>
-  <section class="container">
-    <div>
-      <h1 class="title">{{ title }}</h1>
-      <h2 class="subtitle">{{ subtitle }}</h2>
-      <v-text-field v-model="zipCode" label="入力"></v-text-field>
-      <v-btn @click="debouncedClickWrap">住所</v-btn>
-      <v-text-field v-model="zipAddress.address1" label="住所1"></v-text-field>
-      <v-text-field v-model="zipAddress.address2" label="住所2"></v-text-field>
-      <v-text-field v-model="zipAddress.address3" label="住所3"></v-text-field>
-      <p>{{ zipCode }}</p>
-      <div v-if="isLoading">
-        <v-progress-circular :size="40" indeterminate color="primary"
-          >loading...</v-progress-circular
-        >
-      </div>
+  <section>
+    <h2 class="subtitle">{{ subtitle }}</h2>
+    <ZipInput isRequired @get-address="(val) => setData(val)" />
+    <v-text-field v-model="zipAddress.address1" label="住所1"></v-text-field>
+    <v-text-field v-model="zipAddress.address2" label="住所2"></v-text-field>
+    <v-text-field v-model="zipAddress.address3" label="住所3"></v-text-field>
+    <p>{{ zipCode }}</p>
+    <div v-if="isLoading">
+      <v-progress-circular :size="40" indeterminate color="primary"
+        >loading...</v-progress-circular
+      >
     </div>
   </section>
 </template>
@@ -26,33 +23,26 @@ import test from '~/components/NuxtLogo.vue'
 import ArticleData from '~/types/article'
 import ZipAddressData from '~/types/zipAddress'
 import debounce from 'lodash/debounce'
+import { Address, getAddress } from '~/api/rest/outer'
+import ZipInput from '~/components/molecules/ZipInput.vue'
 
 interface Data {
   title: string
   zipCode: string
-  zipAddress: ZipAddress
+  zipAddress: Partial<Address>
   debouncedClick: Function
   isLoading: boolean
-}
-
-interface ZipAddress {
-  address1?: string
-  address2?: string
-  address3?: string
-  kana1?: string
-  kana2?: string
-  kana3?: string
-  prefcode?: string
-  zipcode?: string
-}
-interface AsyncData {
-  zipAddress: ZipAddress
+  rules: {
+    zipCode: Array<Function>
+    requires: Array<Function>
+  }
 }
 
 export default Vue.extend({
   components: {
     test,
     AppArticle,
+    ZipInput,
   },
   created() {
     this.debouncedClick = debounce(this.click, 1000)
@@ -60,15 +50,24 @@ export default Vue.extend({
   data(): Data {
     return {
       title: `ユーザ設定`,
-      zipCode: '2720023',
+      zipCode: '',
       zipAddress: {},
       debouncedClick: () => {},
       isLoading: false,
+      rules: {
+        zipCode: [
+          (val: string) =>
+            ((val || '').length === 7 && !Number.isNaN(val)) ||
+            '数値7文字入力してください',
+        ],
+        requires: [(val: string) => (val || '').length > 0 || '必須入力です'],
+      },
     }
   },
   computed: {
     subtitle(): string {
       return `${this.title} 登録`
+      this.rules.zipCode.map((e) => e)
     },
   },
   methods: {
@@ -82,25 +81,17 @@ export default Vue.extend({
     },
     async getAddress() {
       console.log(this.zipCode)
-      const data = await this.$axios.$get(
-        `https://zipcloud.ibsnet.co.jp/api/search`,
-        {
-          params: {
-            zipcode: this.zipCode,
-          },
-        }
-      )
-      console.log(data)
-      if (data.status === 200 && data.results) {
-        this.zipAddress = data.results[0]
-      } else {
-        this.zipAddress = {}
-      }
+      const address = await getAddress(this.zipCode)
+      address ? (this.zipAddress = address) : ''
       this.isLoading = false
       console.log(this.isLoading)
     },
+
+    setData(address: Partial<Address>) {
+      address ? (this.zipAddress = address) : ''
+    },
   },
-  /** 
+  /**
   async asyncData({ query, $axios }: Context): Promise<AsyncData> {
     console.log(`queryは?${query.page}`)
     const data = await $axios.$get(`https://zipcloud.ibsnet.co.jp/api/search`, {

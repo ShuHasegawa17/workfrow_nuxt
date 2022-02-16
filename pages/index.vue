@@ -75,8 +75,8 @@ export default Vue.extend({
     }
   },
   computed: {
-    islogin() {
-      return this.$store.getters['login/getLogin']
+    getLogin() {
+      return this.$store.getters['login/login']
     },
   },
   methods: {
@@ -89,7 +89,7 @@ export default Vue.extend({
       this.$store.dispatch('login/login')
       this.$router.push('/user')
     },
-    logout() {
+    logout(): void {
       this.$store.commit('login/setLogin', false)
     },
     validate() {
