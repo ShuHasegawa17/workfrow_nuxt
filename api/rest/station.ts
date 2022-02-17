@@ -46,7 +46,7 @@ async function getStation(params: object): Promise<Array<Station> | undefined> {
     let resultset = res.data.ResultSet
     if (Object.keys(resultset).some((k) => k === 'Point')) {
       if (Array.isArray(resultset.Point)) {
-        result.push(resultset.Point?.map((r) => r.Station))
+        result.push(...resultset.Point?.map((r) => r.Station))
       } else {
         result.push(resultset.Point?.Station)
       }
