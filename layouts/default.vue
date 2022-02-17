@@ -71,6 +71,7 @@ export default Vue.extend({
       menus: [
         { title: 'ユーザ設定', to: '/user', icon: 'mdi-user' },
         { title: 'ログアウト', to: '/', icon: '' },
+        { title: '申請', to: '/shinsei', icon: '' },
         { title: 'テスト', to: '/inspire', icon: '' },
       ],
     }
