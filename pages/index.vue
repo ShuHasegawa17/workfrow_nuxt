@@ -1,21 +1,39 @@
 <template>
-  <section class="container">
-    <div>
-      <h1 class="title">{{ title }}</h1>
-      <h2 class="subtitle">{{ subtitle }}</h2>
-      <v-text-field v-model="zipCode" label="入力"></v-text-field>
-      <v-btn @click="debouncedClickWrap">住所</v-btn>
-      <v-text-field v-model="zipAddress.address1" label="住所1"></v-text-field>
-      <v-text-field v-model="zipAddress.address2" label="住所2"></v-text-field>
-      <v-text-field v-model="zipAddress.address3" label="住所3"></v-text-field>
-      <p>{{ zipCode }}</p>
-      <div v-if="isLoading">
-        <v-progress-circular :size="40" indeterminate color="primary"
-          >loading...</v-progress-circular
-        >
-      </div>
-    </div>
-  </section>
+  <v-app>
+    <v-card class="mt-10 mx-auto" width="400px">
+      <v-card-title>
+        <h1 class="display-1">{{ title }}</h1>
+      </v-card-title>
+      <v-card-text>
+        <v-form ref="form" v-model="valid" lazy-validation>
+          <v-text-field
+            label="ユーザ名"
+            prepend-icon="mdi-account-circle"
+            v-model="name"
+            :rules="[rules.name[0], rules.name[1]]"
+            required
+          />
+          <v-text-field
+            label="パスワード"
+            :type="showPassword ? 'text' : 'password'"
+            prepend-icon="mdi-account-lock-outline"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            v-model="password"
+            @click:append="showPassword = !showPassword"
+            :rules="rules.password"
+            maxlength="20"
+            required
+          />
+          <v-card-actions>
+            <v-btn :disabled="!valid" @click="submit" color="primary"
+              >ログイン</v-btn
+            >
+            <v-btn @click="logout" color="error">ログアウト</v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card-text>
+    </v-card>
+  </v-app>
 </template>
 
 <script lang="ts">
@@ -23,96 +41,62 @@ import Vue from 'vue'
 import { Context } from '@nuxt/types/app'
 import AppArticle from '~/components/AppArticle.vue'
 import test from '~/components/NuxtLogo.vue'
-import ArticleData from '~/types/article'
-import ZipAddressData from '~/types/zipAddress'
 import debounce from 'lodash/debounce'
+import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 
 interface Data {
   title: string
-  zipCode: string
-  zipAddress: ZipAddress
-  debouncedClick: Function
-  isLoading: boolean
-}
-
-interface ZipAddress {
-  address1?: string
-  address2?: string
-  address3?: string
-  kana1?: string
-  kana2?: string
-  kana3?: string
-  prefcode?: string
-  zipcode?: string
-}
-interface AsyncData {
-  zipAddress: ZipAddress
+  showPassword: boolean
+  name: string
+  password: string
+  rules: object
+  valid: boolean
 }
 
 export default Vue.extend({
-  components: {
-    test,
-    AppArticle,
-  },
-  created() {
-    this.debouncedClick = debounce(this.click, 1000)
-  },
   data(): Data {
     return {
-      title: `ユーザ設定`,
-      zipCode: '2720023',
-      zipAddress: {},
-      debouncedClick: () => {},
-      isLoading: false,
+      title: 'ログイン',
+      showPassword: false,
+      name: '',
+      password: '',
+      rules: {
+        name: [
+          (val: string) =>
+            (val || '').length > 0 || 'ユーザ名を入力してください',
+          (val: string) => (val || '').length <= 20 || '20字以内です',
+        ],
+        password: [
+          (val: string) =>
+            (val || '').length > 0 || 'パスワードを入力してください',
+        ],
+      },
+      valid: true,
     }
   },
   computed: {
-    subtitle(): string {
-      return `${this.title} 登録`
+    getLogin() {
+      return this.$store.getters['login/login']
     },
   },
   methods: {
-    click() {
-      this.getAddress()
-    },
-    debouncedClickWrap() {
-      this.isLoading = true
-      console.log(this.isLoading)
-      this.debouncedClick()
-    },
-    async getAddress() {
-      console.log(this.zipCode)
-      const data = await this.$axios.$get(
-        `https://zipcloud.ibsnet.co.jp/api/search`,
-        {
-          params: {
-            zipcode: this.zipCode,
-          },
-        }
-      )
-      console.log(data)
-      if (data.status === 200 && data.results) {
-        this.zipAddress = data.results[0]
-      } else {
-        this.zipAddress = {}
+    submit() {
+      console.log(`${this.name}, ${this.password}`)
+
+      if (!this.validate()) {
+        return
       }
-      this.isLoading = false
-      console.log(this.isLoading)
+      this.$store.dispatch('login/login')
+      this.$router.push('/user')
+    },
+    logout(): void {
+      this.$store.commit('login/setLogin', false)
+    },
+    validate() {
+      const form: any = this.$refs.form
+      return form.validate()
     },
   },
-  async asyncData({ query, $axios }: Context): Promise<AsyncData> {
-    console.log(`queryは?${query.page}`)
-    const data = await $axios.$get(`https://zipcloud.ibsnet.co.jp/api/search`, {
-      params: {
-        zipcode: '2720023',
-      },
-    })
-    console.log(data)
-    return { zipAddress: data.results[0] }
-  },
+  layout: 'login',
 })
-//以降消す
-type IsString<T> = T extends string ? true : false
-type X = IsString<'test'>
-type y = IsString<10>
 </script>
