@@ -73,6 +73,7 @@ export default Vue.extend({
         { title: 'ログアウト', to: '/', icon: '' },
         { title: '申請', to: '/shinsei', icon: '' },
         { title: 'テスト', to: '/inspire', icon: '' },
+        { title: 'ユーザ一覧', to: '/userlist', icon: '' },
       ],
     }
   },
