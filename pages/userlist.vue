@@ -9,6 +9,7 @@
           label="Search"
           single-line
           hide-details
+          class="col-3"
         ></v-text-field>
         <v-spacer></v-spacer>
       </v-card-title>
@@ -16,12 +17,13 @@
         :headers="headers"
         :items="users"
         :search="search"
+        :loading="this.users.length === 0"
+        loading-text="Loading..."
       ></v-data-table>
     </v-card>
   </section>
 </template>
 <script lang="ts">
-import { keys } from 'lodash'
 import Vue from 'vue'
 import { getUserList } from '~/api/rest/user'
 export default Vue.extend({
@@ -33,7 +35,8 @@ export default Vue.extend({
         { text: 'userId', value: 'userId' },
         { text: 'status', value: 'status' },
       ],
-      users: [] as any,
+      users: [] as Array<any>,
+      isLoading: false,
     }
   },
   created() {
@@ -41,13 +44,11 @@ export default Vue.extend({
   },
   methods: {
     async getUsers() {
+      this.isLoading = true
       const users = await getUserList()
       for (const key in users) {
         const u: any = users[key]
         this.users.push(u)
-      }
-      for (const [key, value] of Object.entries(users)) {
-        console.log(value)
       }
     },
   },
