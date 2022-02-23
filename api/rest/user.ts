@@ -1,10 +1,14 @@
 import axios, { AxiosResponse } from 'axios'
 
-//const BASE_URL = 'https://wf-rest.herokuapp.com'
-const BASE_URL = 'http://localhost:8080'
-
+const URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://wf-rest.herokuapp.com'
+    : 'http://localhost:8003'
 export async function getUserList() {
-  const res = await axios.get(`${BASE_URL}/users`)
-  console.log(res)
+  const res = await axios.get(`${URL}/users`).catch((err) => {
+    console.log('エラー発生')
+    return err.response
+  })
+  console.log(res.data)
   return res.data
 }
