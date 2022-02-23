@@ -1,0 +1,15 @@
+openapi: '3.0.3'
+info:
+  title: 'sample api'
+  version: '1.0.0'
+paths:
+  '/message':
+    get:
+      responses:
+        '200':
+          description: 'sample api operation'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: 'HELLO'

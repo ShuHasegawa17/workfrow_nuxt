@@ -6,9 +6,10 @@
     :item-text="items.text"
     :item-value="items.value"
     :search-input.sync="search"
-    no-filter
     :label="label"
+    cache-items
     clearable
+    :rules="rules.require"
   >
   </v-autocomplete>
 </template>
@@ -50,6 +51,9 @@ export default Vue.extend({
       debounced: null as any,
       tempValue: '',
       tempText: '',
+      rules: {
+        require: [(val: string) => (val || '').length > 0 || '必須入力です'],
+      },
     }
   },
   watch: {
