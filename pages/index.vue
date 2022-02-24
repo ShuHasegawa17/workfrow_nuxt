@@ -28,7 +28,6 @@
             <v-btn :disabled="!valid" @click="submit" color="primary"
               >ログイン</v-btn
             >
-            <v-btn @click="logout" color="error">ログアウト</v-btn>
           </v-card-actions>
         </v-form>
       </v-card-text>
@@ -38,11 +37,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Context } from '@nuxt/types/app'
-import AppArticle from '~/components/AppArticle.vue'
-import test from '~/components/NuxtLogo.vue'
-import debounce from 'lodash/debounce'
-import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 
 interface Data {
   title: string
@@ -87,10 +81,7 @@ export default Vue.extend({
         return
       }
       this.$store.dispatch('login/login')
-      this.$router.push('/user')
-    },
-    logout(): void {
-      this.$store.commit('login/setLogin', false)
+      this.$router.push('/user/list')
     },
     validate() {
       const form: any = this.$refs.form

@@ -1,16 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
+import { Address } from '~/types/zipAddress'
 const ZIP_ADDRESS = `https://zipcloud.ibsnet.co.jp/api/search`
-
-export interface Address {
-  address1: string
-  address2: string
-  address3: string
-  kana1: string
-  kana2: string
-  kana3: string
-  prefcode: string
-  zipcode: string
-}
 
 interface Respnse {
   message: string

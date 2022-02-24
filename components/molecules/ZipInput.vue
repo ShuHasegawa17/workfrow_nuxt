@@ -25,10 +25,11 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import { Address, getAddress } from '~/api/rest/outer'
+import { getAddress } from '~/api/rest/outer'
+import { Address } from '~/types/zipAddress'
 import debounce from 'lodash/debounce'
 interface Data {
-  zipCode: string
+  localValue: string
   zipAddress: Partial<Address>
   debouncedClick: Function
   valid: boolean
@@ -46,10 +47,14 @@ export default Vue.extend({
       type: Boolean,
       default: true,
     },
+    value: {
+      type: String,
+      default: '',
+    },
   },
   data(): Data {
     return {
-      zipCode: '',
+      localValue: '',
       zipAddress: {},
       debouncedClick: () => {},
       valid: true,
@@ -67,6 +72,17 @@ export default Vue.extend({
       },
     }
   },
+  computed: {
+    zipCode: {
+      get(): string {
+        return this.value
+      },
+      set(newVal: string) {
+        this.localValue = newVal
+        this.$emit('changeValue', newVal)
+      },
+    },
+  },
   methods: {
     async click() {
       await this.searchAddress()
@@ -77,8 +93,7 @@ export default Vue.extend({
       this.debouncedClick()
     },
     async searchAddress() {
-      console.log(this.zipCode)
-      const address = await getAddress(this.zipCode)
+      const address = await getAddress(this.localValue)
       address ? (this.zipAddress = address) : ''
       this.$store.dispatch('load/end')
     },

@@ -69,11 +69,9 @@ export default Vue.extend({
       author: 'shu hasegawa',
       year: new Date().getFullYear(),
       menus: [
-        { title: 'ユーザ設定', to: '/user', icon: 'mdi-user' },
-        { title: 'ログアウト', to: '/', icon: '' },
+        { title: 'ユーザ一覧', to: '/user/list', icon: 'mdi-user' },
         { title: '申請', to: '/shinsei', icon: '' },
-        { title: 'テスト', to: '/inspire', icon: '' },
-        { title: 'ユーザ一覧', to: '/userlist', icon: '' },
+        { title: 'ログアウト', to: '/', icon: '' },
       ],
     }
   },

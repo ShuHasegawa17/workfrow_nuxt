@@ -19,6 +19,7 @@
         :search="search"
         :loading="isLoading"
         loading-text="Loading..."
+        @dblclick:row="(event, row) => transition(row)"
       >
         <template v-slot:[`item.delete`]="{ item }">
           <v-icon @click="deleteItem(item)"> mdi-delete </v-icon>
@@ -108,6 +109,10 @@ export default Vue.extend({
       this.$nextTick(() => {
         this.deletedIndex = -1
       })
+    },
+    transition(row: any) {
+      console.log(row.item.userId)
+      this.$router.push(`${row.item.userId}`)
     },
   },
 })
