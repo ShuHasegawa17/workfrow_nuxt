@@ -24,7 +24,7 @@
             maxlength="20"
             required
           />
-          <v-card-actions>
+          <v-card-actions class="action">
             <v-btn :disabled="!valid" @click="submit" color="primary"
               >ログイン</v-btn
             >
@@ -91,3 +91,9 @@ export default Vue.extend({
   layout: 'login',
 })
 </script>
+<style lang="scss" scoped>
+.v-card__actions {
+  //display: flex;
+  justify-content: center;
+}
+</style>

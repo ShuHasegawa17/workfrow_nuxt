@@ -29,7 +29,6 @@ import { getAddress } from '~/api/rest/outer'
 import { Address } from '~/types/zipAddress'
 import debounce from 'lodash/debounce'
 interface Data {
-  localValue: string
   zipAddress: Partial<Address>
   debouncedClick: Function
   valid: boolean
@@ -54,7 +53,6 @@ export default Vue.extend({
   },
   data(): Data {
     return {
-      localValue: '',
       zipAddress: {},
       debouncedClick: () => {},
       valid: true,
@@ -78,8 +76,7 @@ export default Vue.extend({
         return this.value
       },
       set(newVal: string) {
-        this.localValue = newVal
-        this.$emit('changeValue', newVal)
+        this.$emit('input', newVal)
       },
     },
   },
@@ -93,7 +90,7 @@ export default Vue.extend({
       this.debouncedClick()
     },
     async searchAddress() {
-      const address = await getAddress(this.localValue)
+      const address = await getAddress(this.zipCode)
       address ? (this.zipAddress = address) : ''
       this.$store.dispatch('load/end')
     },

@@ -49,14 +49,14 @@ export default Vue.extend({
         return this.value
       },
       set(newVal: string) {
-        this.$emit('changeValue', newVal)
+        this.$emit('input', newVal)
       },
     },
   },
   methods: {
     changePicker(val: string) {
       this.menu = false
-      this.$emit('changeValue', val)
+      this.$emit('input', val)
     },
   },
 })

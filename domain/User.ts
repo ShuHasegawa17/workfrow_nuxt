@@ -21,4 +21,20 @@ export default class User {
     this.address2 = address.address2
     this.address3 = address.address3
   }
+
+  public displayBornDate() {
+    return this.bornDate?.replace('-', '年').replace('-', '月') + '日'
+  }
+
+  public displayPostNumber() {
+    return this.postNumber?.slice(0, 3) + '-' + this.postNumber?.slice(3)
+  }
+
+  public displayAddress() {
+    return `${this.address1} ${this.address2} ${this.address3} ${this.address4}`
+  }
+
+  public displayActiveFlag() {
+    return this.activeFlag === true ? '有効' : '無効'
+  }
 }

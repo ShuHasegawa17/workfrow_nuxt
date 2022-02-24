@@ -31,7 +31,6 @@ s
                 <v-col cols="3">
                   <DatePicker
                     v-model="user.bornDate"
-                    @changeValue="(val) => (user.bornDate = val)"
                     label="生年月日"
                   ></DatePicker>
                 </v-col>

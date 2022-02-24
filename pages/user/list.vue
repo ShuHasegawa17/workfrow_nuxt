@@ -21,6 +21,18 @@
         loading-text="Loading..."
         @dblclick:row="(event, row) => transition(row)"
       >
+        <template v-slot:[`item.bornDate`]="{ item }">
+          {{ item.displayBornDate() }}
+        </template>
+        <template v-slot:[`item.postNumber`]="{ item }">
+          {{ item.displayPostNumber() }}
+        </template>
+        <template v-slot:[`item.address`]="{ item }">
+          {{ item.displayAddress() }}
+        </template>
+        <template v-slot:[`item.activeFlag`]="{ item }">
+          {{ item.displayActiveFlag() }}
+        </template>
         <template v-slot:[`item.delete`]="{ item }">
           <v-icon @click="deleteItem(item)"> mdi-delete </v-icon>
         </template>
@@ -44,6 +56,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { getUserList } from '~/api/rest/user'
+import User from '~/domain/User'
 export default Vue.extend({
   data() {
     return {
@@ -57,7 +70,7 @@ export default Vue.extend({
         { text: '有効/無効', value: 'activeFlag' },
         { text: '', value: 'delete', sortable: false },
       ],
-      users: [] as Array<any>,
+      users: [] as Array<User>,
       isLoading: false,
       deletedIndex: -1,
       dialogDelete: false,
@@ -70,39 +83,22 @@ export default Vue.extend({
   methods: {
     async getUsers() {
       this.isLoading = true
-      const users = await getUserList()
-      for (const key in users) {
-        const u: any = users[key]
-        this.users.push(this.fomatData(u))
-      }
+      this.users = await getUserList()
       this.isLoading = false
     },
-    fomatData(user: any) {
-      user.bornDate = user.bornDate.replace('-', '年').replace('-', '月') + '日'
-      user.postNumber =
-        user.postNumber.slice(0, 3) + '-' + user.postNumber.slice(3)
-      user.address =
-        user.address1 +
-        ' ' +
-        user.address2 +
-        ' ' +
-        user.address3 +
-        ' ' +
-        user.address4
-      user.activeFlag = user.activeFlag === 'true' ? '有効' : '無効'
-      user.delete = 'del'
-      return user
-    },
+
     deleteItemConfirm() {
       //TODO 本来はaxios呼び出し
       //const index = this.users.findIndex((user) => user.userId === item.userId)
       this.users.splice(this.deletedIndex, 1)
       this.closeDelete()
     },
+
     deleteItem(item: any) {
       this.deletedIndex = this.users.indexOf(item)
       this.dialogDelete = true
     },
+
     closeDelete() {
       this.dialogDelete = false
       //DOMが更新されたら実行される。=ダイアログが閉じたら
@@ -110,6 +106,7 @@ export default Vue.extend({
         this.deletedIndex = -1
       })
     },
+
     transition(row: any) {
       console.log(row.item.userId)
       this.$router.push(`${row.item.userId}`)

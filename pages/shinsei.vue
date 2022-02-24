@@ -23,6 +23,15 @@
           >
         </v-col>
       </v-row>
+      <v-row>
+        <v-col cols="4">
+          <v-text-field
+            label="金額"
+            suffix="円"
+            @input="(val) => val.toLocaleString()"
+          ></v-text-field>
+        </v-col>
+      </v-row>
     </v-form>
   </section>
 </template>

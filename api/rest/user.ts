@@ -13,7 +13,8 @@ export async function getUserList() {
     return err.response
   })
   console.log(res.data)
-  return res.data
+
+  return res.data.map((user: any) => jsonToUser(user))
 }
 
 export async function getUser(userId: string) {
