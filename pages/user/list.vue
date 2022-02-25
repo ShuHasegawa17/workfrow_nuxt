@@ -3,15 +3,24 @@
     <h2 class="ma-5">ユーザ一覧</h2>
     <v-card>
       <v-card-title>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-          class="col-3"
-        ></v-text-field>
-        <v-spacer></v-spacer>
+        <v-row>
+          <v-col>
+            <v-text-field
+              v-model="search"
+              append-icon="mdi-magnify"
+              label="Search"
+              single-line
+              hide-details
+              class="col-6"
+            ></v-text-field>
+            <v-spacer></v-spacer>
+          </v-col>
+          <v-col align-self="end" class="d-flex justify-end mr-6">
+            <v-btn color="primary" dark fab small nuxt to="new">
+              <v-icon dark>mdi-plus</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-card-title>
       <v-data-table
         :headers="headers"
@@ -19,7 +28,7 @@
         :search="search"
         :loading="isLoading"
         loading-text="Loading..."
-        @dblclick:row="(event, row) => transition(row)"
+        @dblclick:row="(event, row) => toUpdatePage(row)"
       >
         <template v-slot:[`item.bornDate`]="{ item }">
           {{ item.displayBornDate() }}
@@ -107,10 +116,16 @@ export default Vue.extend({
       })
     },
 
-    transition(row: any) {
+    toUpdatePage(row: any) {
       console.log(row.item.userId)
       this.$router.push(`${row.item.userId}`)
     },
   },
 })
 </script>
+<style lang="scss" scoped>
+.create-btn {
+  display: flex;
+  justify-content: flex-end;
+}
+</style>

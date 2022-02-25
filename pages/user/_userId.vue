@@ -19,7 +19,7 @@ s
                 </v-col>
               </v-row>
               <v-row>
-                <v-col cols="6">
+                <v-col cols="3">
                   <v-text-field
                     v-model="user.name"
                     label="氏名"
@@ -33,6 +33,16 @@ s
                     v-model="user.bornDate"
                     label="生年月日"
                   ></DatePicker>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="3">
+                  <v-text-field
+                    v-model="user.email"
+                    label="メール"
+                    dense
+                    type="email"
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -81,9 +91,29 @@ s
             </v-container>
           </v-expansion-panel-content>
         </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header>その他情報</v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-container>
+              <v-row>
+                <v-col cols="3">
+                  <v-checkbox v-model="user.activeFlag" label="有効" dense>
+                  </v-checkbox>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="6">
+                  <v-textarea v-model="user.memo" label="メモ" dense>
+                  </v-textarea>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
       </v-expansion-panels>
 
       <v-card-actions>
+        <v-btn @click="goBack">戻る</v-btn>
         <v-btn
           :disabled="!formIsValid"
           color="success"
@@ -99,7 +129,7 @@ s
 <script lang="ts">
 import Vue from 'vue'
 import ZipInput from '~/components/molecules/ZipInput.vue'
-import { getUser } from '~/api/rest/user'
+import { createUser, getUser, updateUser } from '~/api/rest/user'
 import { Address } from '~/types/zipAddress'
 import User from '~/domain/User'
 import DatePicker from '~/components/atoms/DatePicker.vue'
@@ -111,6 +141,8 @@ interface Data {
   panel: Array<number>
   formIsValid: boolean
   debouncedClick: Function
+  userId: string
+  creatMode: boolean
 }
 
 export default Vue.extend({
@@ -119,9 +151,12 @@ export default Vue.extend({
     DatePicker,
   },
   created() {
+    this.debouncedClick = debounce(this.click, 500)
+
+    this.userId = this.$route.params.userId
+    this.creatMode = this.userId === 'new'
     // パラメータを受け取って、データを取得する
     this.setUser()
-    this.debouncedClick = debounce(this.click, 500)
   },
   data(): Data {
     return {
@@ -130,6 +165,8 @@ export default Vue.extend({
       panel: [0, 1],
       formIsValid: true,
       debouncedClick: () => {},
+      userId: '',
+      creatMode: false,
     }
   },
   methods: {
@@ -137,19 +174,23 @@ export default Vue.extend({
       address && this.user.setAddress ? this.user.setAddress(address) : ''
     },
     async setUser() {
-      const userId = this.$route.params.userId
-      this.user = await getUser(userId)
+      this.user = this.creatMode ? new User() : await getUser(this.userId)
     },
     click() {
       this.setting()
     },
-    setting() {
+    async setting() {
       this.$store.dispatch('load/end')
+      //設定処理
+      this.creatMode ? await createUser(this.user) : await updateUser(this.user)
       this.$router.push('list')
     },
     debouncedClickWrap() {
       this.$store.dispatch('load/start')
       this.debouncedClick()
+    },
+    goBack() {
+      this.$router.back()
     },
   },
 })

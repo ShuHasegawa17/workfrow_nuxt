@@ -7,7 +7,6 @@ const URL =
     : 'http://localhost:8003'
 
 export async function getUserList() {
-  console.log('default url->' + axios.defaults.url)
   const res = await axios.get(`${URL}/users`).catch((err) => {
     console.log(`エラー発生 => ${err}`)
     return err.response
@@ -15,6 +14,26 @@ export async function getUserList() {
   console.log(res.data)
 
   return res.data.map((user: any) => jsonToUser(user))
+}
+
+export async function updateUser(user: User) {
+  console.log(`更新-> ${user}`)
+  const res = await axios.patch(`/users/${user.userId}`, user).catch((err) => {
+    console.log(`エラー発生 => ${err}`)
+    return err.response
+  })
+  console.log(res)
+  return res
+}
+
+export async function createUser(user: User) {
+  console.log(`作成-> ${user}`)
+  const res = await axios.post(`/users`, user).catch((err) => {
+    console.log(`エラー発生 => ${err}`)
+    return err.response
+  })
+  console.log(res)
+  return res
 }
 
 export async function getUser(userId: string) {

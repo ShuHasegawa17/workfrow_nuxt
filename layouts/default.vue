@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar color="deep-purple" dark app>
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
-      <v-toolbar-title>Title</v-toolbar-title>
+      <v-toolbar-title>申請システム</v-toolbar-title>
     </v-app-bar>
 
     <v-navigation-drawer
@@ -69,8 +69,8 @@ export default Vue.extend({
       author: 'shu hasegawa',
       year: new Date().getFullYear(),
       menus: [
-        { title: 'ユーザ一覧', to: '/user/list', icon: 'mdi-user' },
-        { title: '申請', to: '/shinsei', icon: '' },
+        { title: 'ユーザ設定', to: '/user/list', icon: 'mdi-user' },
+        { title: '新規申請', to: '/shinsei', icon: '' },
         { title: 'ログアウト', to: '/', icon: '' },
       ],
     }

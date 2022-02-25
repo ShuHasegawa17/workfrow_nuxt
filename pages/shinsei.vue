@@ -24,7 +24,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="4">
+        <v-col sm="6" md="4" lg="2">
           <v-text-field
             label="金額"
             suffix="円"
