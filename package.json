@@ -1,10 +1,6 @@
 {
   "name": "workflow-nuxt",
   "version": "1.0.0",
-  "engines": {
-    "node": "18.8",
-    "npm": "8.18"
-  },
   "private": true,
   "scripts": {
     "dev": "nuxt",
