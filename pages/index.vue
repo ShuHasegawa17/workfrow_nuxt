@@ -7,7 +7,7 @@
       <v-card-text>
         <v-form ref="form" v-model="valid" lazy-validation>
           <v-text-field
-            label="ユーザ名A"
+            label="ユーザ名AAA"
             prepend-icon="mdi-account-circle"
             v-model="name"
             :rules="[rules.name[0], rules.name[1]]"
